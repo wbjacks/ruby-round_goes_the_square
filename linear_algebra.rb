@@ -11,21 +11,6 @@
 # Camera Coordinates- with reference to viewer ("camera"). Should also hold info
 #   about screen?
 
-PIX_PER_GRID = 50
-GRID_PADDING = 5
-PIX_PER_SQUARE = PIX_PER_GRID - 2 * GRID_PADDING
-
-class Square
-    attr_accessor :coords
-    def initialize(x, y, z)
-        @coords = Coord3D.new(x,y,z)
-    end
-
-    def draw
-        @coords
-    end
-end
-
 # IMMA HOMEROLL SOME MOTHAFUCKIN LINEAR ALGEBRA UP IN HUR
 module LinearAlgebra
     class Collection2D
@@ -161,16 +146,14 @@ module LinearAlgebra
             @z_axis = Vector3D.new(0,0,1)
         end
 
-        def pitch(dT)
-
-        end
-
-        def roll(dT)
-
-        end
-
-        def yaw(dT)
-
+        def rotate(dP, dY, dR)
+            r = RotationMatrix.new(dP.to_f*(Math.PI / 180.0),
+                                   dY.to_f*(Math.PI / 180.0),
+                                   dR.to_f*(Math.PI / 180.0) 
+                                  )
+            @x_axis = r.apply_to(@x_axis)
+            @y_axis = r.apply_to(@y_axis)
+            @z_axis = r.apply_to(@z_axis)
         end
 
         def move(v)
