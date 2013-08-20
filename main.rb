@@ -1,8 +1,9 @@
 require 'gosu'
 require './shapez'
+require './linearAlgebra'
 
 class GameWindow < Gosu::Window
-    attr_accessor :board
+    attr_accessor :camera, :objects
     SIZE = 50 # number of rows / cols
     RESOLUTION = 12 # number of pixels per grid space
     BG_COLOR = Gosu::Color::WHITE
@@ -38,7 +39,7 @@ class GameWindow < Gosu::Window
                        self.width, self.height, BG_COLOR,
                        0, self.height, BG_COLOR)
         @objects.each do |obj|
-            coords = obj.draw
+            coords = obj.draw(self)
             self.draw_quad(coords[0].x, coords[0].y, OBJ_COLOR,
                            coords[1].x, coords[1].y, OBJ_COLOR,
                            coords[2].x, coords[2].y, OBJ_COLOR,
@@ -48,9 +49,10 @@ class GameWindow < Gosu::Window
 end
 
 class Camera
+    attr_accessor :world_location, :orientation, :focal_length
     def initialize(x,y,z)
-        @world_location = LinearAlgebra::Vector3d.new(x,y,z)
-        @orientation = LinearAlgebra::Collection3d.new(0,0,Math::PI) # TODO: Move this
+        @world_location = LinearAlgebra::Vector3D.new(x,y,z)
+        @orientation = LinearAlgebra::Collection3D.new(0,0,Math::PI) # TODO: Move this
         @focal_length = 100 # This will have to be adjusted when I set the world scale
     end
 end

@@ -13,7 +13,7 @@
 
 # IMMA HOMEROLL SOME MOTHAFUCKIN LINEAR ALGEBRA UP IN HUR
 module LinearAlgebra
-    def projection3d(a, c, th, e_z)
+    def self.projection3D(a, c, th, e_z)
         # Calculate d_x,y,z, the vector from the camera to the given point
         # Thanks wikipedia!
         dx = Math.cos(th.y) * (Math.sin(th.z) * (a.y-c.y) + Math.cos(th.z) *
@@ -60,29 +60,29 @@ module LinearAlgebra
 
     class Coord3D < Collection3D
         def +(x)
-            Coord3d.new(self.x + x.x, self.y + x.y, self.z + x.z)
+            Coord3D.new(self.x + x.x, self.y + x.y, self.z + x.z)
         end
 
         def -(x)
-            Coord3d.new(self.x - x.x, self.y - x.y, self.z - x.z)
+            Coord3D.new(self.x - x.x, self.y - x.y, self.z - x.z)
         end
     end
 
     class Vector3D < Collection3D
         def +(x)
-            Vector3d.new(self.x + x.x, self.y + x.y, self.z + x.z)
+            Vector3D.new(self.x + x.x, self.y + x.y, self.z + x.z)
         end
 
         def -(x)
-            Vector3d.new(self.x - x.x, self.y - x.y, self.z - x.z)
+            Vector3D.new(self.x - x.x, self.y - x.y, self.z - x.z)
         end
 
         def *(n)
-            Vector3d.new(self.x * x.x, self.y * x.y, self.z * x.z)
+            Vector3D.new(self.x * x.x, self.y * x.y, self.z * x.z)
         end
 
         def /(n)
-            Vector3d.new(self.x / x.x, self.y / x.y, self.z / x.z)
+            Vector3D.new(self.x / x.x, self.y / x.y, self.z / x.z)
         end
 
         def dot(x)
@@ -90,7 +90,7 @@ module LinearAlgebra
         end
 
         def cross(x)
-            Vector3d.new((self.y * x.z - self.z * x.y), (self.z * x.x - self.x * x.z), (self.x * x.y - self.y * x.x))
+            Vector3D.new((self.y * x.z - self.z * x.y), (self.z * x.x - self.x * x.z), (self.x * x.y - self.y * x.x))
         end
 
         def magnitude
