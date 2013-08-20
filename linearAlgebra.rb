@@ -12,6 +12,7 @@
 #   about screen?
 
 # IMMA HOMEROLL SOME MOTHAFUCKIN LINEAR ALGEBRA UP IN HUR
+# AND FUCK IMMA DO IT POORLY AS A MOTHERFUCKER BUT YOU KNOW WHAT OH WELL DEAL
 module LinearAlgebra
     def self.projection3D(a, c, th, e_z)
         # Calculate d_x,y,z, the vector from the camera to the given point
