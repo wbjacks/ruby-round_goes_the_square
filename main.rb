@@ -1,5 +1,5 @@
 require 'gosu'
-require 'linear_algebra'
+require './shapez'
 
 class GameWindow < Gosu::Window
     attr_accessor :board

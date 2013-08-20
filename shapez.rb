@@ -1,3 +1,4 @@
+#require './linearAlgebra'
 module Shapez
     PTS_PER_GRID = 50
     GRID_PADDING = 5
@@ -11,7 +12,7 @@ module Shapez
             # Construct on xy plane
             @corner_ne = @center +
                 LinearAlgebra::Vector3D.new(PTS_PER_SQUARE / 2,
-                                            PTS_PER_SQUARE / 2
+                                            PTS_PER_SQUARE / 2,
                                             0)
             @corner_se = @center +
                 LinearAlgebra::Vector3D.new(PTS_PER_SQUARE / 2,

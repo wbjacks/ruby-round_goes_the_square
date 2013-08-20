@@ -37,8 +37,8 @@ module LinearAlgebra
         end
     end
 
-    class Coord2D < Collection2D end
-    class Vector2D < Collection2D end
+    class Coord2D < Collection2D; end
+    class Vector2D < Collection2D; end
 
     class Axis2D < Vector2D
         attr_accessor :x_axis, :y_axis
@@ -59,29 +59,29 @@ module LinearAlgebra
     end
 
     class Coord3D < Collection3D
-        def :+ (x)
+        def +(x)
             Coord3d.new(self.x + x.x, self.y + x.y, self.z + x.z)
         end
 
-        def :- (x)
+        def -(x)
             Coord3d.new(self.x - x.x, self.y - x.y, self.z - x.z)
         end
     end
 
     class Vector3D < Collection3D
-        def :+ (x)
+        def +(x)
             Vector3d.new(self.x + x.x, self.y + x.y, self.z + x.z)
         end
 
-        def :- (x)
+        def -(x)
             Vector3d.new(self.x - x.x, self.y - x.y, self.z - x.z)
         end
 
-        def :* (n)
+        def *(n)
             Vector3d.new(self.x * x.x, self.y * x.y, self.z * x.z)
         end
 
-        def :/ (n)
+        def /(n)
             Vector3d.new(self.x / x.x, self.y / x.y, self.z / x.z)
         end
 
@@ -114,7 +114,7 @@ module LinearAlgebra
         # This is maybe a super inefficient way to do this
         # Also this could be generalized WAAAAY better
         # Also I don't give a flying fuck
-        def :* (x)
+        def *(x)
             a_r1 = Vector3D.new(*self.vals[0])
             a_r2 = Vector3D.new(*self.vals[1])
             a_r3 = Vector3D.new(*self.vals[2])
@@ -138,7 +138,7 @@ module LinearAlgebra
             yaw = Matrix33.new(
                     [[Math.cos(y), 0, Math.sin(y)],
                     [0, 1, 0],
-                    [-1*Math.sin(y), 0 Math.cos(y)]])
+                    [-1*Math.sin(y), 0, Math.cos(y)]])
             roll = Matrix33.new(
                     [[Math.cos(r), -1*Math.sin(r), 0],
                     [Math.sin(r), Math.cos(r), 0],
