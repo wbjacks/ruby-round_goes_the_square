@@ -35,6 +35,16 @@ module Shapez
 
         # Runs 3D projection on to window
         def draw(window)
+            # Project dat, probs a better way to do this
+            c = coords.inject([]) do |a, v|
+                a << LinearAlgebra::projection3d(
+                        v[1],
+                        window.camera.world_location,
+                        window.camera.orientation,
+                        window.camera.focal_length)
+                a
+            end
+            c
         end
     end
 end

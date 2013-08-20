@@ -13,6 +13,22 @@
 
 # IMMA HOMEROLL SOME MOTHAFUCKIN LINEAR ALGEBRA UP IN HUR
 module LinearAlgebra
+    def projection3d(a, c, th, e_z)
+        # Calculate d_x,y,z, the vector from the camera to the given point
+        # Thanks wikipedia!
+        dx = Math.cos(th.y) * (Math.sin(th.z) * (a.y-c.y) + Math.cos(th.z) *
+            (a.x-c.x)) - Math.sin(th.y) * (a.z-c.z)
+        dy = Math.sin(th.x) * (Math.cos(th.y) * (a.z-c.z) + Math.sin(th.y) *
+            (Math.sin(th.z) * (a.y-c.y) + Math.cos(th.z) * (a.x-c.x))) +
+            Math.cos(th.x) * (Math.cos(th.z) * (a.y-c.y) - Math.sin(th.z) *
+            (a.x-c.x))
+        dz = Math.cos(th.x) * (Math.cos(th.y) * (a.z-c.z) + Math.sin(th.y) *
+            (Math.sin(th.z) * (a.y-c.y) + Math.cos(th.z) * (a.x - c.x))) -
+            Math.sin(th.x) * (Math.cos(th.x) * (a.y-c.y) - Math.sin(th.z) *
+            (a.x-c.x))
+        Vector2D.new((e_z / dz) * dx, (e_z / dz) * dy)
+    end
+
     class Collection2D
         attr_accessor :x, :y
         def initialize(x, y)

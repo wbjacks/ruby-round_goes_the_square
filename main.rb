@@ -6,6 +6,7 @@ class GameWindow < Gosu::Window
     SIZE = 50 # number of rows / cols
     RESOLUTION = 12 # number of pixels per grid space
     BG_COLOR = Gosu::Color::WHITE
+    OBJ_COLOR = Gosu::Color::RED
 
     def initialize
         # Make window
@@ -17,12 +18,12 @@ class GameWindow < Gosu::Window
         @camera = Camera.new(0, 0, 800)
 
         # Populate world-> This could be done elsewhere for a full raytracer
+        @objects = [Shapez::Square.new(0,0,0)]
     end
 
     # Called at 60Hz, repopulates / effects world objects
     def update
         if @step_count == 20 # 3 times / s
-            @board.step!
             @step_count = 0
         else
             @step_count += 1
@@ -31,11 +32,18 @@ class GameWindow < Gosu::Window
 
     # Does a handy-dandy 3d projection to the window
     def draw
+        # Draw background
         self.draw_quad(0, 0, BG_COLOR,
                        self.width, 0, BG_COLOR,
                        self.width, self.height, BG_COLOR,
                        0, self.height, BG_COLOR)
-        @board.draw
+        @objects.each do |obj|
+            coords = obj.draw
+            self.draw_quad(coords[0].x, coords[0].y, OBJ_COLOR,
+                           coords[1].x, coords[1].y, OBJ_COLOR,
+                           coords[2].x, coords[2].y, OBJ_COLOR,
+                           coords[3].x, coords[3].y, OBJ_COLOR)
+        end
     end
 end
 
