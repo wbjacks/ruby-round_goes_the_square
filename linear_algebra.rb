@@ -33,7 +33,7 @@ module LinearAlgebra
         end
     end
 
-    class Collection3D < Collection3D
+    class Collection3D < Collection2D
         attr_accessor :z
 
         def initialize(x,y,z)

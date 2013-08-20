@@ -27,8 +27,14 @@ module Shapez
                                             0)
         end
 
-        def draw
-            @coords
+        def coords
+            {:center => @center, :corner_ne => @corner_ne,
+             :corner_se => @corner_se, :corner_sw => @corner_sw,
+             :corner_nw => @corner_nw}
+        end
+
+        # Runs 3D projection on to window
+        def draw(window)
         end
     end
 end
