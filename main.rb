@@ -1,11 +1,5 @@
 require 'gosu'
-
-# puts "Please enter size of board: "
-# size = gets.chomp.to_i
-# size
-# b = GameOfLife::Board.new(size)
-# b.populate_random!
-# b.print
+require 'linear_algebra'
 
 class GameWindow < Gosu::Window
     attr_accessor :board
@@ -20,8 +14,9 @@ class GameWindow < Gosu::Window
         @step_count = 0
 
         # Construct camera
+        @camera = Camera.new(0, 0, 800)
 
-        # Populate world
+        # Populate world-> This could be done elsewhere for a full raytracer
     end
 
     # Called at 60Hz, repopulates / effects world objects
@@ -41,6 +36,14 @@ class GameWindow < Gosu::Window
                        self.width, self.height, BG_COLOR,
                        0, self.height, BG_COLOR)
         @board.draw
+    end
+end
+
+class Camera
+    def initialize(x,y,z)
+        @world_location = LinearAlgebra::Vector3d.new(x,y,z)
+        @orientation = LinearAlgebra::Collection3d.new(0,0,Math::PI) # TODO: Move this
+        @focal_length = 100 # This will have to be adjusted when I set the world scale
     end
 end
 
