@@ -6,11 +6,11 @@ require 'logging'
 # Configure loggers
 Logging.logger['GameWindow'].level = :info
 Logging.logger['GameWindow'].add_appenders(Logging.appenders.stdout)
-Logging.logger['Shapez'].level = :debug
+Logging.logger['Shapez'].level = :warn
 Logging.logger['Shapez'].add_appenders(Logging.appenders.stdout)
 Logging.logger['LinearAlgebra'].level = :error
 Logging.logger['LinearAlgebra'].add_appenders(Logging.appenders.stdout)
-Logging.logger['Camera'].level = :info
+Logging.logger['Camera'].level = :warn
 Logging.logger['Camera'].add_appenders(Logging.appenders.stdout)
 
 class GameWindow < Gosu::Window
@@ -69,9 +69,9 @@ class Camera
     attr_accessor :world_location, :orientation, :focal_length
     def initialize(x,y,z)
         @world_location = LinearAlgebra::Vector3D.new(x,y,z)
-        @orientation = LinearAlgebra::Collection3D.new(0,0,Math::PI) # TODO: Move this
+        @orientation = LinearAlgebra::Collection3D.new(0, Math::PI, 0) # TODO: Move this
         @focal_length = 100 # This will have to be adjusted when I set the world scale
-        Logging.logger[self].info "Camera initialized: #{self.inspect}"
+        Logging.logger[self].info "Instance created: #{self.inspect}"
     end
 end
 

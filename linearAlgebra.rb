@@ -13,7 +13,11 @@
 
 # IMMA HOMEROLL SOME MOTHAFUCKIN LINEAR ALGEBRA UP IN HUR
 # AND FUCK IMMA DO IT POORLY AS A MOTHERFUCKER BUT YOU KNOW WHAT OH WELL DEAL
+# FUCK FUCK FUCK EVERYTHING IS BURNING FUCK
+require 'logging'
+
 module LinearAlgebra
+    @@logger = Logging.logger[self]
     def self.projection3D(a, c, th, e_z)
         # Calculate d_x,y,z, the vector from the camera to the given point
         # Thanks wikipedia!
@@ -25,8 +29,10 @@ module LinearAlgebra
             (a.x-c.x))
         dz = Math.cos(th.x) * (Math.cos(th.y) * (a.z-c.z) + Math.sin(th.y) *
             (Math.sin(th.z) * (a.y-c.y) + Math.cos(th.z) * (a.x - c.x))) -
-            Math.sin(th.x) * (Math.cos(th.x) * (a.y-c.y) - Math.sin(th.z) *
+            Math.sin(th.x) * (Math.cos(th.z) * (a.y-c.y) - Math.sin(th.z) *
             (a.x-c.x))
+        @@logger.info 'Direction vector calculated at ' +
+            "#{Vector3D.new(dx,dy,dz).inspect}"
         Vector2D.new((e_z / dz) * dx, (e_z / dz) * dy)
     end
 
