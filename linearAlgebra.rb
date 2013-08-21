@@ -76,49 +76,49 @@ module LinearAlgebra
 
     class Coord3D < Collection3D
         def +(x)
-            Coord3D.new(self.x + x.x, self.y + x.y, self.z + x.z)
+            Coord3D.new(@x + x.x, @y + x.y, @z + x.z)
         end
 
         def -(x)
-            Coord3D.new(self.x - x.x, self.y - x.y, self.z - x.z)
+            Coord3D.new(@x - x.x, @y - x.y, @z - x.z)
         end
     end
 
     class Vector3D < Collection3D
         def +(x)
-            Vector3D.new(self.x + x.x, self.y + x.y, self.z + x.z)
+            Vector3D.new(@x + x.x, @y + x.y, @z + x.z)
         end
 
         def -(x)
-            Vector3D.new(self.x - x.x, self.y - x.y, self.z - x.z)
+            Vector3D.new(@x - x.x, @y - x.y, @z - x.z)
         end
 
         def *(n)
-            Vector3D.new(self.x * x.x, self.y * x.y, self.z * x.z)
+            Vector3D.new(@x * x.x, @y * x.y, @z * x.z)
         end
 
         def /(n)
-            Vector3D.new(self.x / x.x, self.y / x.y, self.z / x.z)
+            Vector3D.new(@x / x.x, @y / x.y, @z / x.z)
         end
 
         def dot(x)
-            self.x * x.x + self.y * x.y + self.z * x.z
+            @x * x.x + @y * x.y + @z * x.z
         end
 
         def cross(x)
-            Vector3D.new((self.y * x.z - self.z * x.y), (self.z * x.x - self.x * x.z), (self.x * x.y - self.y * x.x))
+            Vector3D.new((@y * x.z - @z * x.y), (@z * x.x - @x * x.z), (@x * x.y - @y * x.x))
         end
 
         def magnitude
-            Math.sqrt(self.x**2 + self.y**2 + self.z**2)
+            Math.sqrt(@x**2 + @y**2 + @z**2)
         end
 
-        def normal
+        def normalize
             self / self.magnitude
         end
 
         def to_a
-            [self.x, self.y, self.z]
+            [@x, @y, @z]
         end
     end
 
@@ -131,9 +131,9 @@ module LinearAlgebra
         # Also this could be generalized WAAAAY better
         # Also I don't give a flying fuck
         def *(x)
-            a_r1 = Vector3D.new(*self.vals[0])
-            a_r2 = Vector3D.new(*self.vals[1])
-            a_r3 = Vector3D.new(*self.vals[2])
+            a_r1 = Vector3D.new(*@vals[0])
+            a_r2 = Vector3D.new(*@vals[1])
+            a_r3 = Vector3D.new(*@vals[2])
             
             b_c1 = Vector3D.new(x.vals[0][0], x.vals[1][0], x.vals[2][0])
             b_c2 = Vector3D.new(x.vals[0][1], x.vals[1][1], x.vals[2][1])
@@ -163,7 +163,7 @@ module LinearAlgebra
         end
 
         def apply_to(v)
-            a = self.map {|r| r.dot(v)}
+            a = @R.map {|r| r.dot(v)}
             Vector3D(*a)
         end
     end
@@ -183,9 +183,9 @@ module LinearAlgebra
                                    dY.to_f*(Math.PI / 180.0),
                                    dR.to_f*(Math.PI / 180.0) 
                                   )
-            @x_axis = r.apply_to(@x_axis)
-            @y_axis = r.apply_to(@y_axis)
-            @z_axis = r.apply_to(@z_axis)
+            @x_axis = r.apply_to(@x_axis).normalize
+            @y_axis = r.apply_to(@y_axis).normalize
+            @z_axis = r.apply_to(@z_axis).normalize
         end
 
         def move(v)
