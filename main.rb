@@ -30,7 +30,7 @@ class GameWindow < Gosu::Window
         @step_count = 0
 
         # Construct camera
-        @camera = Camera.new(0, 0, 50)
+        @camera = Camera.new(0, 0, 10)
         @logger.debug 'Camera created.'
 
         # Populate world-> This could be done elsewhere for a full raytracer
@@ -40,11 +40,12 @@ class GameWindow < Gosu::Window
 
     # Called at 60Hz, repopulates / effects world objects
     def update
-        if @step_count == 20 # 3 times / s
-            @step_count = 0
-        else
-            @step_count += 1
-        end
+        @objects.each { |o| o.center.o.z -= 1.0 }
+        #if @step_count == 20 # 3 times / s
+        #    @step_count = 0
+        #else
+        #    @step_count += 1
+        #end
     end
 
     # Does a handy-dandy 3d projection to the window
