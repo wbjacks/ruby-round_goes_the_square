@@ -40,12 +40,13 @@ class GameWindow < Gosu::Window
 
     # Called at 60Hz, repopulates / effects world objects
     def update
-        @objects.each { |o| o.center.o.z -= 1.0 }
-        #if @step_count == 20 # 3 times / s
-        #    @step_count = 0
-        #else
-        #    @step_count += 1
-        #end
+        #@objects.each { |o| o.center.move }
+        if @step_count == 20 # 3 times / s
+            @step_count = 0
+            @objects.each { |o| o.center.rotate(1,0,0) }
+        else
+            @step_count += 1
+        end
     end
 
     # Does a handy-dandy 3d projection to the window

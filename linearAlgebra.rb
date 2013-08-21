@@ -85,20 +85,36 @@ module LinearAlgebra
     end
 
     class Vector3D < Collection3D
-        def +(x)
-            Vector3D.new(@x + x.x, @y + x.y, @z + x.z)
+        def +(n)
+            if n.class == Float or n.class == Fixnum
+                Vector3D.new(@x + n, @y + n, @z + n)
+            else
+                Vector3D.new(@x + n.x, @y + n.y, @z + n.z)
+            end
         end
 
-        def -(x)
-            Vector3D.new(@x - x.x, @y - x.y, @z - x.z)
+        def -(n)
+            if n.class == Float or n.class == Fixnum
+                Vector3D.new(@x - n, @y - n, @z - n)
+            else
+                Vector3D.new(@x - n.x, @y - n.y, @z - n.z)
+            end
         end
 
         def *(n)
-            Vector3D.new(@x * x.x, @y * x.y, @z * x.z)
+            if n.class == Float or n.class == Fixnum
+                Vector3D.new(@x * n, @y * n, @z * n)
+            else
+                Vector3D.new(@x * n.x, @y * n.y, @z * n.z)
+            end
         end
 
         def /(n)
-            Vector3D.new(@x / x.x, @y / x.y, @z / x.z)
+            if n.class == Float or n.class == Fixnum
+                Vector3D.new(@x / n, @y / n, @z / n)
+            else
+                Vector3D.new(@x / n.x, @y / n.y, @z / n.z)
+            end
         end
 
         def dot(x)
@@ -106,7 +122,9 @@ module LinearAlgebra
         end
 
         def cross(x)
-            Vector3D.new((@y * x.z - @z * x.y), (@z * x.x - @x * x.z), (@x * x.y - @y * x.x))
+            Vector3D.new((@y * x.z - @z * x.y),
+                         (@z * x.x - @x * x.z),
+                         (@x * x.y - @y * x.x))
         end
 
         def magnitude
@@ -123,8 +141,9 @@ module LinearAlgebra
     end
 
     class Matrix33
+        attr_accessor :vals
         def initialize(v)
-            @vals = vals
+            @vals = v
         end
 
         # This is maybe a super inefficient way to do this
@@ -163,8 +182,8 @@ module LinearAlgebra
         end
 
         def apply_to(v)
-            a = @R.map {|r| r.dot(v)}
-            Vector3D(*a)
+            a = @R.vals.map {|r| Vector3D.new(*r).dot(v)}
+            Vector3D.new(*a)
         end
     end
 
@@ -172,16 +191,16 @@ module LinearAlgebra
         attr_accessor :x_axis, :y_axis, :z_axis, :o
 
         def initialize(x,y,z)
-            @o = Coord3D.new(x,y,z)
+            @o = Vector3D.new(x,y,z)
             @x_axis = Vector3D.new(1,0,0)
             @y_axis = Vector3D.new(0,1,0)
             @z_axis = Vector3D.new(0,0,1)
         end
 
         def rotate(dP, dY, dR)
-            r = RotationMatrix.new(dP.to_f*(Math.PI / 180.0),
-                                   dY.to_f*(Math.PI / 180.0),
-                                   dR.to_f*(Math.PI / 180.0) 
+            r = RotationMatrix.new(dP.to_f*(Math::PI / 180.0),
+                                   dY.to_f*(Math::PI / 180.0),
+                                   dR.to_f*(Math::PI / 180.0) 
                                   )
             @x_axis = r.apply_to(@x_axis).normalize
             @y_axis = r.apply_to(@y_axis).normalize

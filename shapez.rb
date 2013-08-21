@@ -35,10 +35,20 @@ module Shapez
 
         # Returns world coords
         def coords
-            {:corner_ne => @center.o + @corner_ne,
-             :corner_se => @center.o + @corner_se,
-             :corner_sw => @center.o + @corner_sw,
-             :corner_nw => @center.o + @corner_nw}
+            ne = @center.o +
+                (@center.x_axis*@corner_ne.x + @center.y_axis*@corner_ne.y +
+                @center.z_axis*@corner_ne.z)
+            se = @center.o +
+                (@center.x_axis*@corner_se.x + @center.y_axis*@corner_se.y +
+                @center.z_axis*@corner_se.z)
+            sw = @center.o +
+                (@center.x_axis*@corner_sw.x + @center.y_axis*@corner_sw.y +
+                @center.z_axis*@corner_sw.z)
+            nw = @center.o +
+                (@center.x_axis*@corner_nw.x + @center.y_axis*@corner_nw.y +
+                @center.z_axis*@corner_nw.z)
+            {:corner_ne => ne, :corner_se => se, :corner_sw => sw,
+                :corner_nw => nw}
         end
 
         # Runs 3D projection on to window
