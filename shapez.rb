@@ -18,15 +18,15 @@ module Shapez
                                             PTS_PER_SQUARE / 2.0,
                                             0.0)
             @corner_se = @center +
-                LinearAlgebra::Vector3D.new(PTS_PER_SQUARE / -2.0,
-                                            PTS_PER_SQUARE / 2.0,
+                LinearAlgebra::Vector3D.new(PTS_PER_SQUARE / 2.0,
+                                            PTS_PER_SQUARE / -2.0,
                                             0.0) 
             @corner_sw = @center +
                 LinearAlgebra::Vector3D.new(PTS_PER_SQUARE / -2.0,
                                             PTS_PER_SQUARE / -2.0,
                                             0.0)
             @corner_nw = @center +
-                LinearAlgebra::Vector3D.new(PTS_PER_SQUARE / 2.0,
+                LinearAlgebra::Vector3D.new(PTS_PER_SQUARE / -2.0,
                                             PTS_PER_SQUARE / 2.0,
                                             0.0)
             @logger.info "Instance created: #{self.inspect}"

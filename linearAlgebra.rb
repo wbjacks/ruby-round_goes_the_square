@@ -44,8 +44,17 @@ module LinearAlgebra
         end
     end
 
-    class Coord2D < Collection2D; end
-    class Vector2D < Collection2D; end
+    class Coord2D < Collection2D
+        def to_window_coords(window)
+            Coord2D.new((window.width / 2.0) + @x, (window.height / 2.0) - @y)
+        end
+    end
+
+    class Vector2D < Collection2D
+        def to_window_coords(window)
+            Vector2D.new((window.width / 2.0) + @x, (window.height / 2.0) - @y)
+        end
+    end
 
     class Axis2D < Vector2D
         attr_accessor :x_axis, :y_axis

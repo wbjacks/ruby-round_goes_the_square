@@ -6,7 +6,7 @@ require 'logging'
 # Configure loggers
 Logging.logger['GameWindow'].level = :info
 Logging.logger['GameWindow'].add_appenders(Logging.appenders.stdout)
-Logging.logger['Shapez'].level = :warn
+Logging.logger['Shapez'].level = :debug
 Logging.logger['Shapez'].add_appenders(Logging.appenders.stdout)
 Logging.logger['LinearAlgebra'].level = :error
 Logging.logger['LinearAlgebra'].add_appenders(Logging.appenders.stdout)
@@ -30,7 +30,7 @@ class GameWindow < Gosu::Window
         @step_count = 0
 
         # Construct camera
-        @camera = Camera.new(0, 0, 800)
+        @camera = Camera.new(0, 0, 50)
         @logger.debug 'Camera created.'
 
         # Populate world-> This could be done elsewhere for a full raytracer
@@ -55,7 +55,7 @@ class GameWindow < Gosu::Window
                        self.width, self.height, BG_COLOR,
                        0, self.height, BG_COLOR)
         @objects.each do |obj|
-            coords = obj.draw(self)
+            coords = obj.draw(self).map { |c| c.to_window_coords(self) }
             @logger.debug "Coords calculated at #{coords.inspect}"
             self.draw_quad(coords[0].x, coords[0].y, OBJ_COLOR,
                            coords[1].x, coords[1].y, OBJ_COLOR,
