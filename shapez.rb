@@ -1,4 +1,6 @@
-#require './linearAlgebra'
+require './linearAlgebra'
+require 'logging'
+
 module Shapez
     PTS_PER_GRID = 50
     GRID_PADDING = 5
@@ -8,6 +10,8 @@ module Shapez
         attr_accessor :coords
         def initialize(x, y, z)
             @center = LinearAlgebra::Coord3D.new(x,y,z)
+            Logging.logger[self].info("Instance of Shapez::Square created at " +
+                "#{@center.inspect}.")
 
             # Construct on xy plane
             @corner_ne = @center +
@@ -38,11 +42,15 @@ module Shapez
         def draw(window)
             # Project dat, probs a better way to do this
             c = coords.inject([]) do |a, v|
-                a << LinearAlgebra.projection3D(
-                        v[1],
-                        window.camera.world_location,
-                        window.camera.orientation,
-                        window.camera.focal_length)
+                unless v[0] == :center
+                    a << LinearAlgebra.projection3D(
+                            v[1],
+                            window.camera.world_location,
+                            window.camera.orientation,
+                            window.camera.focal_length)
+                    Logging.logger[self].debug "Square side #{v[0]} projected" +
+                        " to: #{a.last.inspect}"
+                end
                 a
             end
             c

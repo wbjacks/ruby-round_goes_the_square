@@ -1,6 +1,17 @@
 require 'gosu'
 require './shapez'
 require './linearAlgebra'
+require 'logging'
+
+# Configure loggers
+Logging.logger['GameWindow'].level = :info
+Logging.logger['GameWindow'].add_appenders(Logging.appenders.stdout)
+Logging.logger['Shapez'].level = :debug
+Logging.logger['Shapez'].add_appenders(Logging.appenders.stdout)
+Logging.logger['LinearAlgebra'].level = :error
+Logging.logger['LinearAlgebra'].add_appenders(Logging.appenders.stdout)
+Logging.logger['Camera'].level = :info
+Logging.logger['Camera'].add_appenders(Logging.appenders.stdout)
 
 class GameWindow < Gosu::Window
     attr_accessor :camera, :objects
@@ -10,6 +21,9 @@ class GameWindow < Gosu::Window
     OBJ_COLOR = Gosu::Color::RED
 
     def initialize
+        # Grab logger
+        @logger = Logging.logger[self]
+
         # Make window
         super SIZE*RESOLUTION, SIZE*RESOLUTION, false # initializes basic window
         @caption = 'HELP I\'M TRAPPED IN A SIMULACRUM OF REGISTERS'
@@ -17,9 +31,11 @@ class GameWindow < Gosu::Window
 
         # Construct camera
         @camera = Camera.new(0, 0, 800)
+        @logger.debug 'Camera created.'
 
         # Populate world-> This could be done elsewhere for a full raytracer
         @objects = [Shapez::Square.new(0,0,0)]
+        @logger.info "#{@objects.count} objects created."
     end
 
     # Called at 60Hz, repopulates / effects world objects
@@ -40,6 +56,7 @@ class GameWindow < Gosu::Window
                        0, self.height, BG_COLOR)
         @objects.each do |obj|
             coords = obj.draw(self)
+            @logger.debug "Coords calculated at #{coords.inspect}"
             self.draw_quad(coords[0].x, coords[0].y, OBJ_COLOR,
                            coords[1].x, coords[1].y, OBJ_COLOR,
                            coords[2].x, coords[2].y, OBJ_COLOR,
@@ -54,6 +71,7 @@ class Camera
         @world_location = LinearAlgebra::Vector3D.new(x,y,z)
         @orientation = LinearAlgebra::Collection3D.new(0,0,Math::PI) # TODO: Move this
         @focal_length = 100 # This will have to be adjusted when I set the world scale
+        Logging.logger[self].info "Camera initialized: #{self.inspect}"
     end
 end
 
