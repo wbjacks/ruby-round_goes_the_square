@@ -9,23 +9,23 @@ module Shapez
     class Square
         attr_accessor :coords
         def initialize(x, y, z)
-            @center = LinearAlgebra::Coord3D.new(x,y,z)
+            @center = LinearAlgebra::Axis3D.new(x,y,z)
             @logger = Logging.logger[self]
 
             # Construct on xy plane
-            @corner_ne = @center +
+            @corner_ne = @center.o +
                 LinearAlgebra::Vector3D.new(PTS_PER_SQUARE / 2.0,
                                             PTS_PER_SQUARE / 2.0,
                                             0.0)
-            @corner_se = @center +
+            @corner_se = @center.o +
                 LinearAlgebra::Vector3D.new(PTS_PER_SQUARE / 2.0,
                                             PTS_PER_SQUARE / -2.0,
                                             0.0) 
-            @corner_sw = @center +
+            @corner_sw = @center.o +
                 LinearAlgebra::Vector3D.new(PTS_PER_SQUARE / -2.0,
                                             PTS_PER_SQUARE / -2.0,
                                             0.0)
-            @corner_nw = @center +
+            @corner_nw = @center.o +
                 LinearAlgebra::Vector3D.new(PTS_PER_SQUARE / -2.0,
                                             PTS_PER_SQUARE / 2.0,
                                             0.0)

@@ -6,7 +6,7 @@ require 'logging'
 # Configure loggers
 Logging.logger['GameWindow'].level = :info
 Logging.logger['GameWindow'].add_appenders(Logging.appenders.stdout)
-Logging.logger['Shapez'].level = :debug
+Logging.logger['Shapez'].level = :warn
 Logging.logger['Shapez'].add_appenders(Logging.appenders.stdout)
 Logging.logger['LinearAlgebra'].level = :error
 Logging.logger['LinearAlgebra'].add_appenders(Logging.appenders.stdout)
