@@ -17,7 +17,7 @@
 require 'logging'
 
 module LinearAlgebra
-    @@logger = Logging.logger[self]
+    LOGGER = Logging.logger[self]
     def self.projection3D(a, c, th, e_z)
         # Calculate d_x,y,z, the vector from the camera to the given point
         # Thanks wikipedia!
@@ -31,7 +31,7 @@ module LinearAlgebra
             (Math.sin(th.z) * (a.y-c.y) + Math.cos(th.z) * (a.x - c.x))) -
             Math.sin(th.x) * (Math.cos(th.z) * (a.y-c.y) - Math.sin(th.z) *
             (a.x-c.x))
-        @@logger.info 'Direction vector calculated at ' +
+        LOGGER.info 'Direction vector calculated at ' +
             "#{Vector3D.new(dx,dy,dz).inspect}"
         Vector2D.new((e_z / dz) * dx, (e_z / dz) * dy)
     end
@@ -169,7 +169,7 @@ module LinearAlgebra
             pitch = Matrix33.new(
                     [[1, 0, 0],
                     [0, Math.cos(p), -1*Math.sin(p)],
-                    [0, Math.sin(p), -1*Math.cos(p)]])
+                    [0, Math.sin(p), Math.cos(p)]])
             yaw = Matrix33.new(
                     [[Math.cos(y), 0, Math.sin(y)],
                     [0, 1, 0],
@@ -195,9 +195,11 @@ module LinearAlgebra
             @x_axis = Vector3D.new(1,0,0)
             @y_axis = Vector3D.new(0,1,0)
             @z_axis = Vector3D.new(0,0,1)
+            @logger = LinearAlgebra::LOGGER
         end
 
         def rotate(dP, dY, dR)
+            @logger.debug "Preparing rotation, axis at #{self.inspect}"
             r = RotationMatrix.new(dP.to_f*(Math::PI / 180.0),
                                    dY.to_f*(Math::PI / 180.0),
                                    dR.to_f*(Math::PI / 180.0) 
@@ -205,6 +207,7 @@ module LinearAlgebra
             @x_axis = r.apply_to(@x_axis).normalize
             @y_axis = r.apply_to(@y_axis).normalize
             @z_axis = r.apply_to(@z_axis).normalize
+            @logger.debug "Rotation applied, axis now at #{self.inspect}"
         end
 
         def move(v)

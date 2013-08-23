@@ -7,7 +7,7 @@ require 'logging'
 Logging.logger['GameWindow'].level = :info
 Logging.logger['GameWindow'].add_appenders(Logging.appenders.stdout)
 Logging.logger['Shapez'].level = :warn
-Logging.logger['Shapez'].add_appenders(Logging.appenders.stdout)
+Logging.logger['shapez'].add_appenders(Logging.appenders.stdout)
 Logging.logger['LinearAlgebra'].level = :error
 Logging.logger['LinearAlgebra'].add_appenders(Logging.appenders.stdout)
 Logging.logger['Camera'].level = :warn
@@ -30,7 +30,7 @@ class GameWindow < Gosu::Window
         @step_count = 0
 
         # Construct camera
-        @camera = Camera.new(0, 0, 10)
+        @camera = Camera.new(0, 0, 50)
         @logger.debug 'Camera created.'
 
         # Populate world-> This could be done elsewhere for a full raytracer
@@ -40,13 +40,14 @@ class GameWindow < Gosu::Window
 
     # Called at 60Hz, repopulates / effects world objects
     def update
-        #@objects.each { |o| o.center.move }
-        if @step_count == 20 # 3 times / s
-            @step_count = 0
-            @objects.each { |o| o.center.rotate(1,0,0) }
-        else
-            @step_count += 1
-        end
+        #@objects.each { |o| o.center.move(LinearAlgebra::Vector3D.new(0,0,-1)) }
+        @objects.each { |o| o.center.rotate(1,0,0) }
+        #if @step_count == 10 # 6 times / s
+        #    @step_count = 0
+        #    @objects.each { |o| o.center.rotate(0,0,1) }
+        #else
+        #    @step_count += 1
+        #end
     end
 
     # Does a handy-dandy 3d projection to the window
