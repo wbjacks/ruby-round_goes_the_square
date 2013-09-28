@@ -7,15 +7,17 @@ require 'logging'
 # the vertices, one must simply transform the points by the frame.
 
 module Shapez
-    PTS_PER_GRID = 50
-    GRID_PADDING = 5
+    PTS_PER_GRID = 20
+    GRID_PADDING = 1
     PTS_PER_SQUARE = PTS_PER_GRID - (2 * GRID_PADDING)
+    OBJ_COLOR = Gosu::Color::RED
+    LOGGER = Logging.logger[self]
 
     class Square
         attr_accessor :coords, :center
         def initialize(x, y, z)
             @center = LinearAlgebra::Axis3D.new(x,y,z)
-            @logger = Logging.logger[self]
+            @logger = LOGGER
 
             # Construct on xy plane with reference to @center
             @corner_ne = LinearAlgebra::Vector3D.new(PTS_PER_SQUARE / 2.0,
@@ -30,7 +32,7 @@ module Shapez
             @corner_nw = LinearAlgebra::Vector3D.new(PTS_PER_SQUARE / -2.0,
                                                      PTS_PER_SQUARE / 2.0,
                                                      0.0)
-            @logger.info "Instance created: #{self.inspect}"
+            @logger.debug "Instance created: #{self.inspect}"
         end
 
         # Returns world coords
@@ -63,7 +65,39 @@ module Shapez
                 a # idk why this is needed but it is
             end
             @logger.debug "Projected coords are: #{v.inspect}"
-            v # return coords
+            window.draw_quad(
+                v[0].to_window_coords(window).x, v[0].to_window_coords(window).y, OBJ_COLOR,
+                v[1].to_window_coords(window).x, v[1].to_window_coords(window).y, OBJ_COLOR,
+                v[2].to_window_coords(window).x, v[2].to_window_coords(window).y, OBJ_COLOR,
+                v[3].to_window_coords(window).x, v[3].to_window_coords(window).y, OBJ_COLOR)
+        end
+    end
+
+    # This is currently a pretty bad ih struct, would be better to have a
+    # generic shape, have grid and shape inherit from it, and take the grid shape
+    # as an argument. I could do sweet dot matrices that way.
+    class Grid < Square
+        attr_accessor :spots
+        def initialize(cx, cy, cz, size, window)
+            # Construct location and borders
+            super cx, cy, cz
+
+            # Build subsquares
+            @spots = Array.new(size**2) { Square.new(0,0,0) }
+            # Build top left to bottom right
+            @spots.each_with_index do |s,i|
+                c = LinearAlgebra::Vector2D.new((i % size) - (size / 2), (i / size) - (size / 2))
+                s.center.move(LinearAlgebra::Vector3D.new(c.x * PTS_PER_GRID,
+                                                          c.y * PTS_PER_GRID,
+                                                          0))
+                @logger.debug "Grid spot center at #{s.center.inspect}\n"
+            end
+            @logger = LOGGER
+        end
+
+        def draw(window)
+            # Return all coords
+            @spots.each { |x| x.draw window }
         end
     end
 end

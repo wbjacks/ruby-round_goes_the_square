@@ -6,8 +6,8 @@ require 'logging'
 # Configure loggers
 Logging.logger['GameWindow'].level = :info
 Logging.logger['GameWindow'].add_appenders(Logging.appenders.stdout)
-Logging.logger['Shapez'].level = :warn
-Logging.logger['shapez'].add_appenders(Logging.appenders.stdout)
+Logging.logger['Shapez'].level = :info
+Logging.logger['Shapez'].add_appenders(Logging.appenders.stdout)
 Logging.logger['LinearAlgebra'].level = :error
 Logging.logger['LinearAlgebra'].add_appenders(Logging.appenders.stdout)
 Logging.logger['Camera'].level = :warn
@@ -17,8 +17,7 @@ class GameWindow < Gosu::Window
     attr_accessor :camera, :objects
     SIZE = 50 # number of rows / cols
     RESOLUTION = 12 # number of pixels per grid space
-    BG_COLOR = Gosu::Color::WHITE
-    OBJ_COLOR = Gosu::Color::RED
+    BG_COLOR = Gosu::Color::GRAY
 
     def initialize
         # Grab logger
@@ -34,17 +33,19 @@ class GameWindow < Gosu::Window
         @logger.debug 'Camera created.'
 
         # Populate world-> This could be done elsewhere for a full raytracer
-        @objects = [Shapez::Square.new(0,0,0)]
+        @objects = [Shapez::Grid.new(0, 0, 0, 9, self)] 
+        #@objects = [Shapez::Square.new(0,0,0)]
         @logger.info "#{@objects.count} objects created."
     end
 
     # Called at 60Hz, repopulates / effects world objects
     def update
         #@objects.each { |o| o.center.move(LinearAlgebra::Vector3D.new(0,0,-1)) }
-        @objects.each { |o| o.center.rotate(1,0,0) }
+        #@objects.each { |o| o.center.rotate(1,0,2) }
+        @objects.each { |o| o.spots.each { |x| x.center.rotate(1,0,1) }}
         #if @step_count == 10 # 6 times / s
         #    @step_count = 0
-        #    @objects.each { |o| o.center.rotate(0,0,1) }
+        #    @objects.each { |o| o.spots.each { |x| x.center.rotate(0,0,1) }}
         #else
         #    @step_count += 1
         #end
@@ -57,14 +58,7 @@ class GameWindow < Gosu::Window
                        self.width, 0, BG_COLOR,
                        self.width, self.height, BG_COLOR,
                        0, self.height, BG_COLOR)
-        @objects.each do |obj|
-            coords = obj.draw(self).map { |c| c.to_window_coords(self) }
-            @logger.debug "Coords calculated at #{coords.inspect}"
-            self.draw_quad(coords[0].x, coords[0].y, OBJ_COLOR,
-                           coords[1].x, coords[1].y, OBJ_COLOR,
-                           coords[2].x, coords[2].y, OBJ_COLOR,
-                           coords[3].x, coords[3].y, OBJ_COLOR)
-        end
+        @objects.each { |obj| obj.draw(self) }
     end
 end
 
