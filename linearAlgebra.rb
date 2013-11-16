@@ -131,7 +131,7 @@ module LinearAlgebra
             Math.sqrt(@x**2 + @y**2 + @z**2)
         end
 
-        def normalize
+        def normalize!
             self / self.magnitude
         end
 

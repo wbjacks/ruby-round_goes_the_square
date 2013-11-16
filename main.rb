@@ -33,8 +33,10 @@ class GameWindow < Gosu::Window
         @logger.debug 'Camera created.'
 
         # Populate world-> This could be done elsewhere for a full raytracer
-        @objects = [Shapez::Grid.new(0, 0, 0, 9, self)] 
+        #@objects = [Shapez:SquareGrid.new(0, 0, 0, 9)] 
         #@objects = [Shapez::Square.new(0,0,0)]
+        #@objects = [Shapez::Point.new(0,0,0)]
+        @objects = [Shapez::SquareMesh.new(LinearAlgebra::Coord3D.new(0,0,0), 1, 9)]
         @logger.info "#{@objects.count} objects created."
     end
 
@@ -42,7 +44,7 @@ class GameWindow < Gosu::Window
     def update
         #@objects.each { |o| o.center.move(LinearAlgebra::Vector3D.new(0,0,-1)) }
         #@objects.each { |o| o.center.rotate(1,0,2) }
-        @objects.each { |o| o.spots.each { |x| x.center.rotate(1,0,1) }}
+        #@objects.each { |o| o.spots.each { |x| x.center.rotate(0,0,1) }}
         #if @step_count == 10 # 6 times / s
         #    @step_count = 0
         #    @objects.each { |o| o.spots.each { |x| x.center.rotate(0,0,1) }}
@@ -58,7 +60,7 @@ class GameWindow < Gosu::Window
                        self.width, 0, BG_COLOR,
                        self.width, self.height, BG_COLOR,
                        0, self.height, BG_COLOR)
-        @objects.each { |obj| obj.draw(self) }
+        @objects.each { |obj| obj.draw(self, Gosu::Color::GREEN) }
     end
 end
 
