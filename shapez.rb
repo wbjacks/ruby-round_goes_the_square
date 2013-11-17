@@ -212,7 +212,7 @@ module Shapez
                 end
 
                 # South
-                ti = i - size
+                ti = i + size
                 unless ti >= (size * density)**2
                     dest = @verts[ti]
                     unless dest.nil? or dest.neighborhood[:n]
