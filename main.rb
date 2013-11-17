@@ -37,6 +37,7 @@ class GameWindow < Gosu::Window
         #@objects = [Shapez::Square.new(0,0,0)]
         #@objects = [Shapez::Point.new(0,0,0)]
         @objects = [Shapez::SquareMesh.new(LinearAlgebra::Coord3D.new(0,0,0), 1, 9)]
+        @objects.each { |o| o.center.rotate(-10, 0, 0) }
         @logger.info "#{@objects.count} objects created."
     end
 

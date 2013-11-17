@@ -19,7 +19,7 @@ module Shapez
         attr_accessor :center
         VIRTUAL_SIZE = 3
         def initialize(x, y, z)
-            @center = LinearAlgebra::Coord3D.new(x,y,z)
+            @center = LinearAlgebra::Vector3D.new(x,y,z)
             @vir_verts = [
                 LinearAlgebra::Vector3D.new(
                     Math.cos(Math::PI/2.0),
@@ -119,17 +119,19 @@ module Shapez
         def initialize(p1, p2)
             @src = p1
             @dest = p2
-            @dir = LinearAlgebra::Vector3D.new((p2.x - p1.x), (p2.y - p1.y), (p2.z - p1.z))
-            @dir = @dir.normalize!
+            @dir = LinearAlgebra::Vector3D.new(p2.center.x - p1.center.x,
+                                               p2.center.y - p1.center.y,
+                                               p2.center.z - p1.center.z)
+            @dir = @dir.normalize
         end
 
         def draw(w, c)
             # Basic style... give the point a little space
-            st = LinearAlgebra.projection3D(@src + (@dir * VERT_SPACE),
+            st = LinearAlgebra.projection3D(@src.coord + (@dir * VERT_SPACE),
                                               w.camera.world_location,
                                               w.camera.orientation,
                                               w.camera.focal_length)
-            ed = LinearAlgebra.projection3D(@dest - (@dir * VERT_SPACE),
+            ed = LinearAlgebra.projection3D(@dest.coord - (@dir * VERT_SPACE),
                                                w.camera.world_location,
                                                w.camera.orientation,
                                                w.camera.focal_length)
@@ -137,6 +139,10 @@ module Shapez
                         st.to_window_coords(w).y, c,
                         ed.to_window_coords(w).x,
                         ed.to_window_coords(w).y, c)
+        end
+
+        def self.getNeighborhood(vert, edge_list)
+            edge_list.find_all { |e| e.src == vert or e.dest == vert }
         end
     end
 
@@ -171,11 +177,28 @@ module Shapez
 
     class Vertex < Point
         attr_accessor :neighborhood
-        def initialize(p)
-            super p.x, p.y, p.z
+        def initialize(v, a)
+            super v.x, v.y, v.z
 
             # Create neighborhood map
             @neighborhood = Hash.new { false }
+            @axis = a
+        end
+
+        # Returns absolute coordinate
+        def coord
+            @axis.o + (@axis.x_axis * @center.x + @axis.y_axis * @center.y +
+                @axis.z_axis * @center.z)
+        end
+
+        def draw(win, col)
+            # Draw with reference to given central axis
+            # hax- store rel. point and calc absolute
+            foo = @center.clone
+            @center = self.coord
+            super win, col
+            # Return rel point
+            @center = foo
         end
     end
 
@@ -192,10 +215,10 @@ module Shapez
             # Build top left to bottom right
             0.upto((size * density)**2 - 1).count do |i|
                 c = LinearAlgebra::Vector2D.new((i % size) - (size / 2), (i / size) - (size / 2))
-                @verts << Vertex.new(LinearAlgebra::Coord3D.new(
+                @verts << Vertex.new(LinearAlgebra::Vector3D.new(
                     c.x * PTS_PER_GRID,
                     c.y * PTS_PER_GRID,
-                    0))
+                    0), @center)
             end
 
             # Build edges- prettier way to do this
@@ -206,7 +229,7 @@ module Shapez
                 unless ti < 0
                     dest = @verts[ti]
                     unless dest.nil? or dest.neighborhood[:s]
-                        @edges << Edge.new(v.center, dest.center) 
+                        @edges << Edge.new(v, dest) 
                         dest.neighborhood[:s] = true
                     end
                 end
@@ -216,7 +239,7 @@ module Shapez
                 unless ti >= (size * density)**2
                     dest = @verts[ti]
                     unless dest.nil? or dest.neighborhood[:n]
-                        @edges << Edge.new(v.center, dest.center) 
+                        @edges << Edge.new(v, dest) 
                         dest.neighborhood[:n] = true
                     end
                 end
@@ -225,7 +248,7 @@ module Shapez
                 unless (i+1) % size == 0
                     dest = @verts[i + 1]
                     unless dest.nil? or dest.neighborhood[:w]
-                        @edges << Edge.new(v.center, dest.center) 
+                        @edges << Edge.new(v, dest) 
                         dest.neighborhood[:w] = true
                     end
                 end
@@ -234,12 +257,12 @@ module Shapez
                 unless i % size == 0
                     dest = @verts[i - 1]
                     unless dest.nil? or dest.neighborhood[:e]
-                        @edges << Edge.new(v.center, dest.center) 
+                        @edges << Edge.new(v, dest) 
                         dest.neighborhood[:e] = true
                     end
                 end
             end
-
+            # Reset map
             @logger = LOGGER
         end
 
